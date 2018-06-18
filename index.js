@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+
 let persons = [
     {
       name: "Cary Grant",
@@ -40,12 +43,12 @@ let persons = [
   ]
 
 app.get('/api/persons', (req, res) => {
-    console.log("returning list of persons")
+    //console.log("returning list of persons")
     res.json(persons)
 })
 
 app.get('/info', (req, res) => {
-  console.log("returning info page")
+  //console.log("returning info page")
   const amount = persons.length
   const layout = `<div>
                     <p>Puhelinluettelossa ${amount} henkilön tiedot<p>
@@ -58,7 +61,7 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) =>{
-  console.log("getting person")
+  //console.log("getting person")
   const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
 
@@ -71,13 +74,43 @@ app.get('/api/persons/:id', (req, res) =>{
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  console.log("deleting person")
+  //console.log("deleting person")
   const id = Number(req.params.id)
   persons = persons.filter(person => person.id !== id)
   res.status(204).end()
 })
 
+app.post('/api/persons', (req, res) => {
+  //console.log("adding person")
+  const body = req.body
+
+  if(body.name === undefined) {
+    return res.status(400).json({ error: 'nimi puuttuu' })
+  }
+  if(body.number === undefined) {
+    return res.status(400).json({ error: 'numero puuttuu' })
+  }
+  //console.log("person name", body.name)
+  const uniqueness = persons.find(person => person.name === body.name)
+  //console.log("unique", uniqueness)
+  if(uniqueness) {
+    return res.status(400).json({ error: 'ei uniikki nimi' })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: Math.floor(Math.random() * Math.floor(100000))
+  }
+  //persons.push(person) State managemnt problems?
+  persons = persons.concat(person)
+
+  res.json(person)
+
+})
+
+
 const PORT = 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  //console.log(`Server running on port ${PORT}`)
 })
