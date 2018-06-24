@@ -4,6 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(express.static('build'))
 app.use(cors())
@@ -13,7 +14,7 @@ morgan.token('type', function (req, res) { return JSON.stringify(req.body)})
 const morganString = ':method :url :type :status :res[content-length] - :response-time ms'
 app.use(morgan(morganString))
 
-let persons = [
+/**let persons = [
     {
       name: "Cary Grant",
       number: "040-123456",
@@ -49,11 +50,26 @@ let persons = [
       number: "040-123456",
       id: 7  
     }
-  ]
+  ]**/
+
+const formatPerson = (person) => {
+    return {
+      name: person.name,
+      number: person.number,
+      id: person._id
+    }
+}  
+
 
 app.get('/api/persons', (req, res) => {
     //console.log("returning list of persons")
-    res.json(persons)
+    //res.json(persons)
+    Person
+    .find({}, {__v: 0})
+    .then(person => {
+      res.json(person.map(formatPerson))
+    })
+
 })
 
 app.get('/info', (req, res) => {
