@@ -109,10 +109,40 @@ app.post('/api/persons', (req, res) => {
   //console.log("adding person")
   const body = req.body
 
-  if(body.name === undefined) {
+  if(body.name === "") {
+    res.status(400).json({ error: 'nimi puuttuu' })
+  }
+  if(body.number === "") {
+    res.status(400).json({ error: 'numero puuttuu' })
+  }
+  //console.log("person name", body.name)
+  //const uniqueness = persons.find(person => person.name === body.name)
+  //console.log("unique", uniqueness)
+  /**if(uniqueness) {
+    return res.status(400).json({ error: 'ei uniikki nimi' })
+  }**/
+
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
+
+  person
+    .save()
+    .then(savedPerson => {
+      res.json(Person.format(savedPerson))
+    })
+
+})
+
+/**app.post('/api/persons', (req, res) => {
+  //console.log("adding person")
+  const body = req.body
+
+  if(body.name === "") {
     return res.status(400).json({ error: 'nimi puuttuu' })
   }
-  if(body.number === undefined) {
+  if(body.number === "") {
     return res.status(400).json({ error: 'numero puuttuu' })
   }
   //console.log("person name", body.name)
@@ -132,7 +162,7 @@ app.post('/api/persons', (req, res) => {
 
   res.json(person)
 
-})
+})**/
 
 
 const PORT = process.env.PORT || 3001
