@@ -100,13 +100,41 @@ app.get('/api/persons/:id', (req, res) =>{
 
 app.delete('/api/persons/:id', (req, res) => {
   //console.log("deleting person")
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-  res.status(204).end()
+  Person
+    .findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      res.status(400).send({ error: 'malformatted id' })
+    })
+
+  //const id = Number(req.params.id)
+  //persons = persons.filter(person => person.id !== id)
+  //res.status(204).end()
+})
+
+app.put('/api/persons/:id', (req, res) => {
+  console.log("Here")
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+    .then(updatedPerson => {
+      res.json(Person.format(updatedPerson))
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
 })
 
 app.post('/api/persons', (req, res) => {
-  //console.log("adding person")
+  console.log("adding person")
   const body = req.body
 
   if(body.name === "") {
