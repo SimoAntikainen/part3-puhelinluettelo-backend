@@ -66,28 +66,49 @@ app.get('/api/persons', (req, res) => {
     //res.json(persons)
     Person
     .find({}, {__v: 0})
-    .then(person => {
-      res.json(person.map(Person.format))
+    .then(persons => {
+      res.json(persons.map(Person.format))
     })
 
 })
 
 app.get('/info', (req, res) => {
   //console.log("returning info page")
-  const amount = persons.length
-  const layout = `<div>
+  
+  Person
+    .find({}, {__v: 0})
+    .then(persons => {
+      const amount = persons.length
+
+      const layout = `<div>
                     <p>Puhelinluettelossa ${amount} henkilön tiedot<p>
                   <div>
                   <div>
                     <p>${new Date()}<p>
                   <div>
                   `
-  res.send(layout)
+      res.send(layout)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) =>{
+
   //console.log("getting person")
-  const id = Number(req.params.id)
+  Person
+    .findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(Person.format(person))
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'malformatted id' })
+    })
+
+  /**const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
 
   if(person) {
@@ -95,7 +116,7 @@ app.get('/api/persons/:id', (req, res) =>{
 
   } else {
     res.status(404).end()
-  }
+  }**/
 })
 
 app.delete('/api/persons/:id', (req, res) => {
