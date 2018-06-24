@@ -52,13 +52,13 @@ app.use(morgan(morganString))
     }
   ]**/
 
-const formatPerson = (person) => {
+/**const formatPerson = (person) => {
     return {
       name: person.name,
       number: person.number,
       id: person._id
     }
-}  
+}**/  
 
 
 app.get('/api/persons', (req, res) => {
@@ -67,7 +67,7 @@ app.get('/api/persons', (req, res) => {
     Person
     .find({}, {__v: 0})
     .then(person => {
-      res.json(person.map(formatPerson))
+      res.json(person.map(Person.format))
     })
 
 })
