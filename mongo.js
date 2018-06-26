@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb://simoa:<...>@ds163730.mlab.com:63730/hymooc_simo_puhelinluettelo'
-
+const url = 'mongodb://simoa:<...>@ds263109.mlab.com:63109/puhtuotanto'
+//mongodb://simoa:<....>@ds163730.mlab.com:63730/hymooc_simo_puhelinluettelo
 mongoose.connect(url)
 
 const Person = mongoose.model('Person', {

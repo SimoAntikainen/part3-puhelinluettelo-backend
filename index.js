@@ -157,11 +157,11 @@ app.put('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   console.log("adding person")
   const body = req.body
-
-  if(body.name === "") {
+  //json cant be undefined?
+  if(body.name === "" || body.name === null) {
     res.status(400).json({ error: 'nimi puuttuu' })
   }
-  if(body.number === "") {
+  if(body.number === "" || body.number === null) {
     res.status(400).json({ error: 'numero puuttuu' })
   }
   //console.log("person name", body.name)
@@ -170,8 +170,27 @@ app.post('/api/persons', (req, res) => {
   /**if(uniqueness) {
     return res.status(400).json({ error: 'ei uniikki nimi' })
   }**/
+  Person.find({name: body.name})
+    .then(result => {
+      //[] == 0 => true, uniqueneess check loose equality 
+      if(result != 0) {
+        res.status(400).json({ error: 'ei uniikki nimi' })  
+      } else {
+        const person = new Person({
+          name: body.name,
+          number: body.number
+        })
 
-  const person = new Person({
+        person
+        .save()
+        .then(savedPerson => {
+          res.json(Person.format(savedPerson))
+        })
+      }
+    })
+
+
+  /**const person = new Person({
     name: body.name,
     number: body.number
   })
@@ -180,7 +199,7 @@ app.post('/api/persons', (req, res) => {
     .save()
     .then(savedPerson => {
       res.json(Person.format(savedPerson))
-    })
+    })**/
 
 })
 

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb://simoa:<...>@ds163730.mlab.com:63730/hymooc_simo_puhelinluettelo'
-
+if ( process.env.NODE_ENV !== 'production' ) {
+    require('dotenv').config()
+}
+ 
+const url = process.env.MONGODB_URI
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
