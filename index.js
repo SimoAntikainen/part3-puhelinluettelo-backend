@@ -161,9 +161,10 @@ app.post('/api/persons', (req, res) => {
   if(body.name === "" || body.name === null) {
     res.status(400).json({ error: 'nimi puuttuu' })
   }
-  if(body.number === "" || body.number === null) {
+  else if(body.number === "" || body.number === null) {
     res.status(400).json({ error: 'numero puuttuu' })
   }
+  else {
   //console.log("person name", body.name)
   //const uniqueness = persons.find(person => person.name === body.name)
   //console.log("unique", uniqueness)
@@ -188,6 +189,7 @@ app.post('/api/persons', (req, res) => {
         })
       }
     })
+  }
 
 
   /**const person = new Person({
